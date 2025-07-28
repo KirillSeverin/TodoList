@@ -8,14 +8,15 @@
 import CoreData
 import UIKit
 
-final class TaskListPresenter: TaskListPresenterProtocol {
+final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
     
     weak var view: TaskListViewProtocol?
     var interactor: TaskListInteractorProtocol?
     var router: TaskListRouterProtocol?
     private var fetchedResultsController: NSFetchedResultsController<TaskEntity>!
     
-    init() {
+    override init() {
+        super.init()
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
@@ -25,6 +26,7 @@ final class TaskListPresenter: TaskListPresenterProtocol {
             sectionNameKeyPath: nil,
             cacheName: nil
         )
+        fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
     }
     
@@ -47,5 +49,13 @@ final class TaskListPresenter: TaskListPresenterProtocol {
     
     func task(at indexPath: IndexPath) -> TaskEntity {
         fetchedResultsController.object(at: indexPath)
+    }
+}
+
+extension TaskListPresenter: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {}
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        view?.reloadTasks()
     }
 }
