@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import Speech
+import AudioToolbox
 
 final class TaskListViewController: UIViewController, TaskListViewProtocol {
     
     var presenter: TaskListPresenterProtocol!
     private let tableView = UITableView()
     private let searchController = UISearchController(searchResultsController: nil)
+    private let speechManager = SpeechRecognitionManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +22,14 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
         setupUI()
         setupAddButton()
         setupSearch()
+        SFSpeechRecognizer.requestAuthorization { status in
+            switch status {
+            case .authorized:
+                print("Speach authorized")
+            default:
+                print("Speach not available")
+            }
+        }
     }
     
     private func setupAddButton() {
@@ -38,6 +49,13 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
         searchController.searchBar.placeholder = "Search tasks"
         navigationItem.searchController = searchController
         definesPresentationContext = true
+        searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.setImage(
+            UIImage(systemName: "mic"),
+            for: .bookmark,
+            state: .normal
+        )
+        searchController.searchBar.delegate = self
     }
     
     private func setupUI() {
@@ -87,5 +105,15 @@ extension TaskListViewController: UITableViewDataSource {
 extension TaskListViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         presenter.searchTextChanged(searchController.searchBar.text ?? "")
+    }
+}
+
+extension TaskListViewController: UISearchBarDelegate {
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        speechManager.toggleListening { [weak self] resultText in
+            guard let self = self else { return }
+            self.searchController.searchBar.text = resultText
+            self.presenter.searchTextChanged(resultText)
+        }
     }
 }
