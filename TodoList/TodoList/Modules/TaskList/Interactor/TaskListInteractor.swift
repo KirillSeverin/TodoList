@@ -14,7 +14,7 @@ final class TaskListInteractor: TaskListInteractorProtocol {
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     func fetchInitialTasksIfNeeded() {
-//        if UserDefaults.standard.bool(forKey: "isDataLoaded") { return }
+        if UserDefaults.standard.bool(forKey: "isDataLoaded") { return }
         
         DispatchQueue.global().async {
             guard let url = URL(string: "https://dummyjson.com/todos") else { return }

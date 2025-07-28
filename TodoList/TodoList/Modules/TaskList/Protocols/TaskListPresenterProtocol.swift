@@ -10,4 +10,7 @@ import Foundation
 protocol TaskListPresenterProtocol: AnyObject {
     func viewDidLoaded()
     func didLoadInitialTasks()
+    func numberOfTasks() -> Int
+    func task(at indexPath: IndexPath) -> TaskEntity
+    
 }
