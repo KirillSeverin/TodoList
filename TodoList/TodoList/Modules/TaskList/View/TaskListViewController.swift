@@ -11,12 +11,14 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
     
     var presenter: TaskListPresenterProtocol!
     private let tableView = UITableView()
+    private let searchController = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter.viewDidLoad()
         setupUI()
         setupAddButton()
+        setupSearch()
     }
     
     private func setupAddButton() {
@@ -28,6 +30,14 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
     
     @objc private func addTaskTapped() {
         presenter.didTapAddTask(from: self)
+    }
+    
+    private func setupSearch() {
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.placeholder = "Search tasks"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
     }
     
     private func setupUI() {
@@ -71,5 +81,11 @@ extension TaskListViewController: UITableViewDataSource {
         config.secondaryText = task.isCompleted ? "✔ Done" : "⏳ Pending"
         cell.contentConfiguration = config
         return cell
+    }
+}
+
+extension TaskListViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        presenter.searchTextChanged(searchController.searchBar.text ?? "")
     }
 }

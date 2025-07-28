@@ -50,6 +50,29 @@ final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
     func task(at indexPath: IndexPath) -> TaskEntity {
         fetchedResultsController.object(at: indexPath)
     }
+    
+    func searchTextChanged(_ text: String?) {
+        let context = fetchedResultsController.managedObjectContext
+        let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+        
+        if let text = text, !text.isEmpty {
+            fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
+        }
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(
+                key: "title",
+                ascending: true,
+                selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
+        ]
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        fetchedResultsController.delegate = self
+        try? fetchedResultsController.performFetch()
+        view?.reloadTasks()
+    }
 }
 
 extension TaskListPresenter: NSFetchedResultsControllerDelegate {
