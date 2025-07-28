@@ -5,12 +5,12 @@
 //  Created by Kirill Severin on 28.07.25.
 //
 
-import Foundation
+import UIKit
 
 protocol TaskListPresenterProtocol: AnyObject {
-    func viewDidLoaded()
+    func viewDidLoad()
     func didLoadInitialTasks()
     func numberOfTasks() -> Int
     func task(at indexPath: IndexPath) -> TaskEntity
-    
+    func didTapAddTask(from view: UIViewController)
 }

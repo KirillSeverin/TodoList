@@ -14,8 +14,20 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.viewDidLoaded()
+        presenter.viewDidLoad()
         setupUI()
+        setupAddButton()
+    }
+    
+    private func setupAddButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(addTaskTapped))
+    }
+    
+    @objc private func addTaskTapped() {
+        presenter.didTapAddTask(from: self)
     }
     
     private func setupUI() {

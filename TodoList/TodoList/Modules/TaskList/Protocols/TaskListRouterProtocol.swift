@@ -5,6 +5,8 @@
 //  Created by Kirill Severin on 28.07.25.
 //
 
-import Foundation
+import UIKit
 
-protocol TaskListRouterProtocol: AnyObject { }
+protocol TaskListRouterProtocol: AnyObject {
+    func navigateToAddTask(from view: UIViewController)
+}

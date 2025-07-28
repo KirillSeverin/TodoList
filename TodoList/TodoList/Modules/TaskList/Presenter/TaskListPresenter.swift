@@ -12,7 +12,7 @@ final class TaskListPresenter: TaskListPresenterProtocol {
     
     weak var view: TaskListViewProtocol?
     var interactor: TaskListInteractorProtocol?
-    weak var router: TaskListRouterProtocol?
+    var router: TaskListRouterProtocol?
     private var fetchedResultsController: NSFetchedResultsController<TaskEntity>!
     
     init() {
@@ -28,13 +28,17 @@ final class TaskListPresenter: TaskListPresenterProtocol {
         try? fetchedResultsController.performFetch()
     }
     
-    func viewDidLoaded() {
+    func viewDidLoad() {
         interactor?.fetchInitialTasksIfNeeded()
     }
     
     func didLoadInitialTasks() {
         try? fetchedResultsController.performFetch()
         view?.reloadTasks()
+    }
+    
+    func didTapAddTask(from view: UIViewController) {
+        router?.navigateToAddTask(from: view)
     }
     
     func numberOfTasks() -> Int {
