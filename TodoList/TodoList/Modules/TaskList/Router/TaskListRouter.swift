@@ -30,7 +30,7 @@ final class TaskListRouter: TaskListRouterProtocol {
     }
     
     func navigateToEditTask(from view: UIViewController, task: TaskEntity) {
-        let editVC = AddTaskRouter.assembleModule(with: task)
-        view.present(UINavigationController(rootViewController: editVC), animated: true)
+        let editVC = EditTaskRouter.assembleModule(with: task)
+        view.navigationController?.pushViewController(editVC, animated: true)
     }
 }
