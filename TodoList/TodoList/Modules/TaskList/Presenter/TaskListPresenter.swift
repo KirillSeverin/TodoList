@@ -73,6 +73,18 @@ final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
         try? fetchedResultsController.performFetch()
         view?.reloadTasks()
     }
+    
+    func editTask(at indexPath: IndexPath, from view: UIViewController) {
+        let task = fetchedResultsController.object(at: indexPath)
+        router?.navigateToEditTask(from: view, task: task)
+    }
+    
+    func deleteTask(at indexPath: IndexPath) {
+        let context = fetchedResultsController.managedObjectContext
+        let task = fetchedResultsController.object(at: indexPath)
+        context.delete(task)
+        try? context.save()
+    }
 }
 
 extension TaskListPresenter: NSFetchedResultsControllerDelegate {

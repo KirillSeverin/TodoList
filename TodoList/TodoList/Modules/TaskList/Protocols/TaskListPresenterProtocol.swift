@@ -14,4 +14,6 @@ protocol TaskListPresenterProtocol: AnyObject {
     func task(at indexPath: IndexPath) -> TaskEntity
     func didTapAddTask(from view: UIViewController)
     func searchTextChanged(_ text: String?)
+    func editTask(at indexPath: IndexPath, from view: UIViewController)
+    func deleteTask(at indexPath: IndexPath)
 }

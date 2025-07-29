@@ -65,6 +65,7 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
         tableView.dataSource = self
+        tableView.delegate = self
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -96,6 +97,32 @@ extension TaskListViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: TaskCell.identifier, for: indexPath) as! TaskCell
         cell.configure(with: task)
         return cell
+    }
+}
+
+extension TaskListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
+                   point: CGPoint) -> UIContextMenuConfiguration? {
+        
+        return UIContextMenuConfiguration(
+            identifier: indexPath as NSIndexPath,
+            previewProvider: nil) { _ in
+                let edit = UIAction(
+                    title: "Редактировать",
+                    image: UIImage(systemName: "pencil")) { _ in
+                        self.presenter.editTask(at: indexPath, from: self)
+                    }
+                
+                let delete = UIAction(
+                    title: "Удалить",
+                    image: UIImage(
+                        systemName: "trash"),
+                    attributes: .destructive) { _ in
+                        self.presenter.deleteTask(at: indexPath)
+                    }
+                
+                return UIMenu(title: "", children: [edit, delete])
+            }
     }
 }
 
