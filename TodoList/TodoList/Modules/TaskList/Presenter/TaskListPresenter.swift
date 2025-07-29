@@ -85,6 +85,16 @@ final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
         context.delete(task)
         try? context.save()
     }
+    
+    func toggleTaskStatus(at indexPath: IndexPath) {
+        let task = fetchedResultsController.object(at: indexPath)
+        task.isCompleted.toggle()
+        do {
+            try fetchedResultsController.managedObjectContext.save()
+        } catch {
+            view?.showError("Что-то пошло не так")
+        }
+    }
 }
 
 extension TaskListPresenter: NSFetchedResultsControllerDelegate {

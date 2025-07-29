@@ -63,25 +63,24 @@ final class TaskCell: UITableViewCell {
     }
     
     func configure(with task: TaskEntity) {
-        titleLabel.text = task.title
         descLabel.text = task.desc
+        
         if let date = task.date {
             let formatter = DateFormatter()
             formatter.dateStyle = .short
             dateLabel.text = formatter.string(from: date)
-            
-            if task.isCompleted {
-                titleLabel.textColor = .secondaryLabel
-                descLabel.textColor = .secondaryLabel
-                titleLabel.attributedText = NSAttributedString(string: task.title ?? "", attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue])
-                statusIcon.image = UIImage(systemName: "checkmark.circle.fill")
-            } else {
-                titleLabel.textColor = .label
-                descLabel.textColor = .label
-                titleLabel.attributedText = nil
-                titleLabel.text = task.title
-                statusIcon.image = UIImage(systemName: "circle")
-            }
+        } else {
+            dateLabel.text = nil
         }
+        
+        let attributes: [NSAttributedString.Key: Any] = task.isCompleted
+        ? [.foregroundColor: UIColor.secondaryLabel,
+           .strikethroughStyle: NSUnderlineStyle.single.rawValue]
+        : [.foregroundColor: UIColor.label]
+        
+        titleLabel.attributedText = NSAttributedString(string: task.title ?? "", attributes: attributes)
+        
+        descLabel.textColor = task.isCompleted ? .secondaryLabel : .label
+        statusIcon.image = UIImage(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
     }
 }

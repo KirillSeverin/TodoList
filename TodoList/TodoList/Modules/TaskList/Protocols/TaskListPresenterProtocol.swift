@@ -16,4 +16,5 @@ protocol TaskListPresenterProtocol: AnyObject {
     func searchTextChanged(_ text: String?)
     func editTask(at indexPath: IndexPath, from view: UIViewController)
     func deleteTask(at indexPath: IndexPath)
+    func toggleTaskStatus(at indexPath: IndexPath)
 }

@@ -160,6 +160,11 @@ extension TaskListViewController: UITableViewDelegate {
                 return UIMenu(title: "", children: [edit, delete])
             }
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        presenter.toggleTaskStatus(at: indexPath)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 extension TaskListViewController: UISearchResultsUpdating {

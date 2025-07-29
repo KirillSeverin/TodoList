@@ -8,7 +8,7 @@
 import UIKit
 
 final class AddTaskRouter: AddTaskRouterProtocol {
-    static func assembleModule(with task: TaskEntity? = nil) -> UIViewController {
+    static func assembleModule() -> UIViewController {
         let view = AddTaskViewController()
         let presenter = AddTaskPresenter()
         let interactor = AddTaskInteractor()
@@ -19,10 +19,6 @@ final class AddTaskRouter: AddTaskRouterProtocol {
         presenter.interactor = interactor
         presenter.router = router
         interactor.presenter = presenter
-        
-        if let task = task {
-            presenter.editingTask = task
-        }
         
         return view
     }
