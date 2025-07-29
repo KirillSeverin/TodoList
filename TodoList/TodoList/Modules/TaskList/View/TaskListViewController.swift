@@ -12,9 +12,36 @@ import AudioToolbox
 final class TaskListViewController: UIViewController, TaskListViewProtocol {
     
     var presenter: TaskListPresenterProtocol!
-    private let tableView = UITableView()
     private let searchController = UISearchController(searchResultsController: nil)
     private let speechManager = SpeechRecognitionManager()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Задачи"
+        label.font = .preferredFont(forTextStyle: .extraLargeTitle)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let titleContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let backButtonItem: UIBarButtonItem = {
+        let backItem = UIBarButtonItem()
+        backItem.title = "Назад"
+        backItem.tintColor = .systemOrange
+        return backItem
+    }()
+    
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
+        return tableView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +49,30 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
         setupUI()
         setupAddButton()
         setupSearch()
+    }
+    
+    private func setupAddButton() {
+        let addButton = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(addTaskTapped))
+        addButton.tintColor = .systemOrange
+        navigationItem.rightBarButtonItem = addButton
+    }
+    
+    private func setupSearch() {
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.placeholder = "Search"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.setImage(
+            UIImage(systemName: "mic"),
+            for: .bookmark,
+            state: .normal
+        )
+        searchController.searchBar.delegate = self
         SFSpeechRecognizer.requestAuthorization { status in
             switch status {
             case .authorized:
@@ -32,47 +83,32 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
         }
     }
     
-    private func setupAddButton() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .add,
-            target: self,
-            action: #selector(addTaskTapped))
-    }
-    
-    @objc private func addTaskTapped() {
-        presenter.didTapAddTask(from: self)
-    }
-    
-    private func setupSearch() {
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchResultsUpdater = self
-        searchController.searchBar.placeholder = "Search tasks"
-        navigationItem.searchController = searchController
-        definesPresentationContext = true
-        searchController.searchBar.showsBookmarkButton = true
-        searchController.searchBar.setImage(
-            UIImage(systemName: "mic"),
-            for: .bookmark,
-            state: .normal
-        )
-        searchController.searchBar.delegate = self
-    }
-    
     private func setupUI() {
-        title = "Tasks"
         view.backgroundColor = .systemBackground
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
+        navigationItem.backBarButtonItem = backButtonItem
+        let leftItem = UIBarButtonItem(customView: titleContainerView)
+        navigationItem.leftBarButtonItem = leftItem
         tableView.dataSource = self
         tableView.delegate = self
         
+        view.addSubview(tableView)
+        titleContainerView.addSubview(titleLabel)
         NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: titleContainerView.leadingAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: titleContainerView.centerYAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: titleContainerView.trailingAnchor),
+            titleLabel.topAnchor.constraint(equalTo: titleContainerView.topAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: titleContainerView.bottomAnchor),
+            
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+    
+    @objc private func addTaskTapped() {
+        presenter.didTapAddTask(from: self)
     }
     
     func reloadTasks() {

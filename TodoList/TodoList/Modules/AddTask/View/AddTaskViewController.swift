@@ -16,23 +16,25 @@ final class AddTaskViewController: UIViewController, AddTaskViewProtocol {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "New Task"
-        view.backgroundColor = .systemBackground
         setupForm()
         setupSaveButton()
     }
     
     private func setupSaveButton() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "Save",
+        let addButton = UIBarButtonItem(
+            title: "Сохранить",
             style: .done,
             target: self,
             action: #selector(saveTapped))
+        addButton.tintColor = .systemOrange
+        navigationItem.rightBarButtonItem = addButton
     }
     
     private func setupForm() {
-        titleField.placeholder = "Title"
-        descField.placeholder = "Description"
+        title = "Новая задача"
+        view.backgroundColor = .systemBackground
+        titleField.placeholder = "Заголовок"
+        descField.placeholder = "Описание"
         
         titleField.translatesAutoresizingMaskIntoConstraints = false
         descField.translatesAutoresizingMaskIntoConstraints = false
@@ -59,7 +61,7 @@ final class AddTaskViewController: UIViewController, AddTaskViewProtocol {
     }
 
     func showError(_ message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }

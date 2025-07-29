@@ -52,7 +52,7 @@ final class TaskCell: UITableViewCell {
         NSLayoutConstraint.activate([
             statusIcon.widthAnchor.constraint(equalToConstant: 24),
             statusIcon.heightAnchor.constraint(equalToConstant: 24),
-            statusIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            statusIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
             statusIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
             stackView.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 12),

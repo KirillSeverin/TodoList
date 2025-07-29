@@ -18,7 +18,18 @@ final class EditTaskViewController: UIViewController, EditTaskViewProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupSaveButton()
         presenter.viewDidLoad()
+    }
+    
+    private func setupSaveButton() {
+        let addButton = UIBarButtonItem(
+            title: "Сохранить",
+            style: .done,
+            target: self,
+            action: #selector(saveTapped))
+        addButton.tintColor = .systemOrange
+        navigationItem.rightBarButtonItem = addButton
     }
     
     private func setupUI() {
@@ -48,8 +59,6 @@ final class EditTaskViewController: UIViewController, EditTaskViewProtocol {
             descField.leadingAnchor.constraint(equalTo: titleField.leadingAnchor),
             descField.trailingAnchor.constraint(equalTo: titleField.trailingAnchor)
         ])
-
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Сохранить", style: .done, target: self, action: #selector(saveTapped))
     }
 
     @objc private func saveTapped() {
