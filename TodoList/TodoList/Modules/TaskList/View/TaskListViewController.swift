@@ -63,7 +63,7 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
         view.backgroundColor = .systemBackground
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "TaskCell")
+        tableView.register(TaskCell.self, forCellReuseIdentifier: TaskCell.identifier)
         tableView.dataSource = self
         
         NSLayoutConstraint.activate([
@@ -93,11 +93,8 @@ extension TaskListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let task = presenter.task(at: indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath)
-        var config = cell.defaultContentConfiguration()
-        config.text = task.title
-        config.secondaryText = task.isCompleted ? "✔ Done" : "⏳ Pending"
-        cell.contentConfiguration = config
+        let cell = tableView.dequeueReusableCell(withIdentifier: TaskCell.identifier, for: indexPath) as! TaskCell
+        cell.configure(with: task)
         return cell
     }
 }
