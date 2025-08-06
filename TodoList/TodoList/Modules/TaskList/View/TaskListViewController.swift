@@ -45,7 +45,6 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.viewDidLoad()
         setupUI()
         setupAddButton()
         setupSearch()
