@@ -62,7 +62,7 @@ final class TaskListViewController: UIViewController, TaskListViewProtocol {
     private func setupSearch() {
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchResultsUpdater = self
-        searchController.searchBar.placeholder = "Search"
+        searchController.searchBar.placeholder = "Поиск"
         navigationItem.searchController = searchController
         definesPresentationContext = true
         searchController.searchBar.showsBookmarkButton = true

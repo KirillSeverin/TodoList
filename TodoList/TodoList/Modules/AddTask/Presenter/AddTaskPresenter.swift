@@ -15,7 +15,7 @@ final class AddTaskPresenter: AddTaskPresenterProtocol {
     
     func didTapSave(title: String?, description: String?) {
         guard let title = title, !title.isEmpty else {
-            view?.showError("Title is required")
+            view?.showError("Заголовок обязателен")
             return
         }
         interactor?.saveTask(title: title, description: description ?? "")
