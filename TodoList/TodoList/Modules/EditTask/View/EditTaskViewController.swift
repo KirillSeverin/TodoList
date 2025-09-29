@@ -17,6 +17,7 @@ final class EditTaskViewController: UIViewController, EditTaskViewProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        hideKeyboardWhenTappedAround()
         setupUI()
         setupSaveButton()
         presenter.viewDidLoad()

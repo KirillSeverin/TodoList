@@ -11,7 +11,6 @@ import UIKit
 final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
     
     weak var view: TaskListViewProtocol?
-    var interactor: TaskListInteractorProtocol?
     var router: TaskListRouterProtocol?
     private var fetchedResultsController: NSFetchedResultsController<TaskEntity>!
     
@@ -28,10 +27,6 @@ final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
         )
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
-    }
-    
-    func viewDidLoad() {
-        interactor?.fetchInitialTasksIfNeeded()
     }
     
     func didLoadInitialTasks() {

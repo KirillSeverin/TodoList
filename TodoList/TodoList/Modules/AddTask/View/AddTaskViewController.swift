@@ -13,21 +13,23 @@ final class AddTaskViewController: UIViewController, AddTaskViewProtocol {
     
     private let titleField = UITextField()
     private let descField = UITextField()
+    private let saveButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        hideKeyboardWhenTappedAround()
         setupForm()
         setupSaveButton()
     }
     
     private func setupSaveButton() {
-        let addButton = UIBarButtonItem(
-            title: "Сохранить",
-            style: .done,
-            target: self,
-            action: #selector(saveTapped))
-        addButton.tintColor = .systemOrange
-        navigationItem.rightBarButtonItem = addButton
+        saveButton.setTitle( "Сохранить", for: .normal)
+        saveButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
+        saveButton.backgroundColor = .systemOrange
+        saveButton.setTitleColor(.systemBackground, for: .normal)
+        saveButton.layer.cornerRadius = 25
+        saveButton.titleLabel?.textAlignment = .center
+        saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
     }
     
     private func setupForm() {
@@ -38,8 +40,10 @@ final class AddTaskViewController: UIViewController, AddTaskViewProtocol {
         
         titleField.translatesAutoresizingMaskIntoConstraints = false
         descField.translatesAutoresizingMaskIntoConstraints = false
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleField)
         view.addSubview(descField)
+        view.addSubview(saveButton)
         
         NSLayoutConstraint.activate([
             titleField.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
@@ -47,7 +51,11 @@ final class AddTaskViewController: UIViewController, AddTaskViewProtocol {
             titleField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
             descField.topAnchor.constraint(equalTo: titleField.bottomAnchor, constant: 30),
             descField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
-            descField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20)])
+            descField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
+            saveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            saveButton.widthAnchor.constraint(equalToConstant: 200),
+            saveButton.heightAnchor.constraint(equalToConstant: 50)])
     }
     
     @objc private func saveTapped() {
