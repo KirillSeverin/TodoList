@@ -12,6 +12,7 @@ final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
     
     weak var view: TaskListViewProtocol?
     var router: TaskListRouterProtocol?
+    var interactor: TaskListInteractorProtocol?
     private var fetchedResultsController: NSFetchedResultsController<TaskEntity>!
     
     override init() {
@@ -27,6 +28,10 @@ final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
         )
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
+    }
+    
+    func viewDidLoad() {
+        interactor?.fetchInitialTasksIfNeeded()
     }
     
     func didLoadInitialTasks() {
