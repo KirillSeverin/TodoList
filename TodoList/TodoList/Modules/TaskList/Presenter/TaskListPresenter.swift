@@ -17,7 +17,7 @@ final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
     
     override init() {
         super.init()
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = CoreDataManager.shared.viewContext
         let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
         fetchedResultsController = NSFetchedResultsController(

@@ -18,7 +18,7 @@ final class AddTaskPresenter: AddTaskPresenterProtocol {
             view?.showError("Заголовок обязателен")
             return
         }
-        interactor?.saveTask(title: title, description: description ?? "")
+        interactor?.addTask(title: title, description: description ?? "")
     }
     
     func didSaveTask() {

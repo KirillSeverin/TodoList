@@ -11,17 +11,14 @@ import CoreData
 final class EditTaskInteractor: EditTaskInteractorProtocol {
     
     weak var presenter: EditTaskInteractorOutputProtocol?
+    private let taskRepository: TaskRepositoryProtocol
+    
+    init(taskRepository: TaskRepositoryProtocol = TaskRepository()) {
+        self.taskRepository = taskRepository
+    }
     
     func saveTask(task: TaskEntity, title: String, description: String) {
-        task.title = title
-        task.desc = description
-        
-        do {
-            let context = task.managedObjectContext
-            try context?.save()
-            presenter?.taskSaved()
-        } catch {
-            print("Ошибка при сохранении: \(error)")
-        }
+        taskRepository.updateTask(task, title: title, desc: description)
+        presenter?.taskSaved()
     }
 }

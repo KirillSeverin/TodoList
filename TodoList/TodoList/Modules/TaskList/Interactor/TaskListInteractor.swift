@@ -10,8 +10,11 @@ import CoreData
 
 final class TaskListInteractor: TaskListInteractorProtocol {
     weak var presenter: TaskListPresenterProtocol?
+    private let taskRepository: TaskRepositoryProtocol
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    init(taskRepository: TaskRepositoryProtocol = TaskRepository()) {
+        self.taskRepository = taskRepository
+    }
     
     func fetchInitialTasksIfNeeded() {
         if UserDefaults.standard.bool(forKey: "isDataLoaded") { return }
@@ -23,7 +26,7 @@ final class TaskListInteractor: TaskListInteractorProtocol {
                 if let data = data {
                     do {
                         let decoded = try JSONDecoder().decode(DummyTodos.self, from: data)
-                        self.saveTasksToCoreData(decoded.todos)
+                        self.saveTasksToDataBase(decoded.todos)
                         print(DummyTodos(todos: decoded.todos))
                         DispatchQueue.main.async {
                             UserDefaults.standard.set(true, forKey: "isDataLoaded")
@@ -37,17 +40,8 @@ final class TaskListInteractor: TaskListInteractorProtocol {
         }
     }
     
-    private func saveTasksToCoreData(_ todos: [TaskModel]) {
-        todos.forEach { task in
-            let entity = TaskEntity(context: context)
-            entity.id = Int64(task.id)
-            entity.title = task.todo
-            entity.desc = task.description
-            entity.isCompleted = task.completed
-            entity.date = Date()
-        }
-        
-        try? context.save()
+    private func saveTasksToDataBase(_ todos: [TaskModel]) {
+        taskRepository.saveTasksToDataBase(todos)
     }
 }
 

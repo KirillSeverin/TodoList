@@ -8,5 +8,5 @@
 import Foundation
 
 protocol AddTaskInteractorProtocol: AnyObject {
-    func saveTask(title: String, description: String)
+    func addTask(title: String, description: String)
 }
