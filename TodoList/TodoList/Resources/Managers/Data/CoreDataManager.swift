@@ -23,12 +23,12 @@ final class CoreDataManager {
         return container
     }()
     
-    var viewContext: NSManagedObjectContext {
-        return persistentContainer.viewContext
-    }
+    lazy var viewContext: NSManagedObjectContext = {
+        persistentContainer.viewContext
+    }()
     
     func saveContext(_ context: NSManagedObjectContext? = nil) {
-        let contextToSave = context ?? persistentContainer.viewContext
+        let contextToSave = context ?? viewContext
         if contextToSave.hasChanges {
             do {
                 try contextToSave.save()

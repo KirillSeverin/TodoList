@@ -17,7 +17,7 @@ final class EditTaskInteractor: EditTaskInteractorProtocol {
         self.taskRepository = taskRepository
     }
     
-    func saveTask(task: TaskEntity, title: String, description: String) {
+    func updateTask(task: TaskEntity, title: String, description: String) {
         taskRepository.updateTask(task, title: title, desc: description)
         presenter?.taskSaved()
     }

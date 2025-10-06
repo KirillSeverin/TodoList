@@ -8,5 +8,5 @@
 import Foundation
 
 protocol EditTaskInteractorProtocol: AnyObject {
-    func saveTask(task: TaskEntity, title: String, description: String)
+    func updateTask(task: TaskEntity, title: String, description: String)
 }
