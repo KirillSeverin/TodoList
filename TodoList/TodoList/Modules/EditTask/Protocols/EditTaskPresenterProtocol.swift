@@ -8,7 +8,7 @@
 import Foundation
 
 protocol EditTaskPresenterProtocol: AnyObject {
-    var task: TaskEntity! { get set }
+    var task: TaskEntity? { get set }
     func viewDidLoad()
     func didTapSave(title: String?, description: String?)
 }

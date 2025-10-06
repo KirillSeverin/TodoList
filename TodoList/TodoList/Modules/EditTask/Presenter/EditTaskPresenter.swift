@@ -20,9 +20,12 @@ final class EditTaskPresenter: EditTaskPresenterProtocol {
         return formatter
     }()
     
-    var task: TaskEntity!
+    var task: TaskEntity?
     
     func viewDidLoad() {
+        guard let task = task else {
+            return
+        }
         view?.setTask(
             title: task.title,
             description: task.desc,
@@ -30,11 +33,17 @@ final class EditTaskPresenter: EditTaskPresenterProtocol {
     }
     
     func didTapSave(title: String?, description: String?) {
-        guard let title = title, !title.isEmpty else {
+        guard let title = title,
+              !title.isEmpty else {
             view?.showError("Введите заголовок")
             return
         }
-        interactor?.saveTask(task: task, title: title, description: description ?? "")
+        guard let task = task else {
+            return
+        }
+        interactor?.updateTask(task: task,
+                               title: title,
+                               description: description ?? "")
     }
 }
 

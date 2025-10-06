@@ -10,15 +10,14 @@ import UIKit
 final class AddTaskInteractor: AddTaskInteractorProtocol {
     
     weak var presenter: AddTaskPresenterProtocol?
+    private let taskRepository: TaskRepositoryProtocol
     
-    func saveTask(title: String, description: String) {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        let task = TaskEntity(context: context)
-        task.title = title
-        task.desc = description
-        task.date = Date()
-        task.isCompleted = false
-        try? context.save()
+    init(taskRepository: TaskRepositoryProtocol = TaskRepository()) {
+        self.taskRepository = taskRepository
+    }
+    
+    func addTask(title: String, description: String) {
+        taskRepository.addTask(title: title, desc: description)
         presenter?.didSaveTask()
     }
 }

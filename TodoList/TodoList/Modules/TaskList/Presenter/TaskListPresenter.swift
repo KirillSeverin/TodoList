@@ -13,29 +13,13 @@ final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
     weak var view: TaskListViewProtocol?
     var router: TaskListRouterProtocol?
     var interactor: TaskListInteractorProtocol?
-    private var fetchedResultsController: NSFetchedResultsController<TaskEntity>!
-    
-    override init() {
-        super.init()
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
-        fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        fetchedResultsController.delegate = self
-        try? fetchedResultsController.performFetch()
-    }
     
     func viewDidLoad() {
+        interactor?.setupFetchedResultsController(delegate: self)
         interactor?.fetchInitialTasksIfNeeded()
     }
     
     func didLoadInitialTasks() {
-        try? fetchedResultsController.performFetch()
         view?.reloadTasks()
     }
     
@@ -44,56 +28,33 @@ final class TaskListPresenter: NSObject, TaskListPresenterProtocol {
     }
     
     func numberOfTasks() -> Int {
-        fetchedResultsController.fetchedObjects?.count ?? 0
+        interactor?.fechTasks().count ?? 0
     }
     
     func task(at indexPath: IndexPath) -> TaskEntity {
-        fetchedResultsController.object(at: indexPath)
-    }
-    
-    func searchTextChanged(_ text: String?) {
-        let context = fetchedResultsController.managedObjectContext
-        let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
-        
-        if let text = text, !text.isEmpty {
-            fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
+        guard let task = interactor?.task(at: indexPath) else {
+            fatalError("Interactor не инициализирован или вернул nil")
         }
-        fetchRequest.sortDescriptors = [
-            NSSortDescriptor(
-                key: "title",
-                ascending: true,
-                selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
-        ]
-        fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil)
-        fetchedResultsController.delegate = self
-        try? fetchedResultsController.performFetch()
-        view?.reloadTasks()
+        return task
     }
     
     func editTask(at indexPath: IndexPath, from view: UIViewController) {
-        let task = fetchedResultsController.object(at: indexPath)
+        guard let task = interactor?.task(at: indexPath) else {
+            fatalError("Interactor не инициализирован или вернул nil")
+        }
         router?.navigateToEditTask(from: view, task: task)
     }
     
     func deleteTask(at indexPath: IndexPath) {
-        let context = fetchedResultsController.managedObjectContext
-        let task = fetchedResultsController.object(at: indexPath)
-        context.delete(task)
-        try? context.save()
+        interactor?.deleteTask(at: indexPath)
     }
     
     func toggleTaskStatus(at indexPath: IndexPath) {
-        let task = fetchedResultsController.object(at: indexPath)
-        task.isCompleted.toggle()
-        do {
-            try fetchedResultsController.managedObjectContext.save()
-        } catch {
-            view?.showError("Что-то пошло не так")
-        }
+        interactor?.toggleTaskStatus(at: indexPath)
+    }
+    
+    func searchTextChanged(_ text: String?) {
+        interactor?.searchTasks(query: text)
     }
 }
 
